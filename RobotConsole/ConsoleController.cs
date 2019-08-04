@@ -7,6 +7,8 @@ namespace RobotControlFramework.MaintainanceConsole
     {
         int currentChannel = 0;
 
+        HexpodSequence sequence = new HexpodSequence();
+
         internal void Run()
         {
             Console.WriteLine("Awaiting commands.");
@@ -21,6 +23,12 @@ namespace RobotControlFramework.MaintainanceConsole
                     case "Q":
                     case "QUIT":
                         return;
+                    case "SEQ":
+                        Command.StartSequence(sequence).Execute();
+                        break;
+                    case "STOP":
+                        Command.StopHexSequencer().Execute();
+                        break;
                     case "C":
                         try
                         {

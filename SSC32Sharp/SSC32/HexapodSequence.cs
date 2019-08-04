@@ -19,21 +19,21 @@ namespace RobotControlFramework.SSC32
     {
         // Walking Gait Configuration
 
-        public int VerticalServo_Left_HighValue = 1000;
-        public int VerticalServo_Left_MidValue = 1400;
-        public int VerticalServo_Left_LowValue = 1800;
+        public int VerticalServo_Left_HighValue = 1600;
+        public int VerticalServo_Left_MidValue = 1300;
+        public int VerticalServo_Left_LowValue = 1000;
 
-        public int VerticalServo_Right_HighValue = 2000;
-        public int VerticalServo_Right_MidValue = 1600;
-        public int VerticalServo_Right_LowValue = 1200;
+        public int VerticalServo_Right_HighValue = 1000;
+        public int VerticalServo_Right_MidValue = 1300;
+        public int VerticalServo_Right_LowValue = 1600;
 
         public ushort VerticalServo_MovementSpeed = 3000;
 
-        public int HorizontalServo_Left_FrontValue = 1700;
-        public int HorizontalServo_Left_RearValue = 1300;
+        public int HorizontalServo_Left_FrontValue = 700;
+        public int HorizontalServo_Left_RearValue = 1600;
 
-        public int HorizontalServo_Right_FrontValue = 1300;
-        public int HorizontalServo_Right_RearValue = 1700;
+        public int HorizontalServo_Right_FrontValue = 1600;
+        public int HorizontalServo_Right_RearValue = 700;
 
         public ushort HorizontalServo_MovementTime = 1500;
         public int TravelPercentage_Left = 100;

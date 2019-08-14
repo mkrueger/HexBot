@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Reflection;
 using RobotControlFramework.SSC32;
 
 namespace RobotControlFramework.MaintainanceConsole
@@ -6,11 +8,21 @@ namespace RobotControlFramework.MaintainanceConsole
     class ConsoleController : AbstractController
     {
         int currentChannel = 0;
+        HexpodSequenceListener listener;
 
-        HexpodSequence sequence = new HexpodSequence();
 
         internal void Run()
         {
+            listener = new HexpodSequenceListener(Path.Combine(Path.GetDirectoryName(Assembly.GetCallingAssembly().Location), "../../sequence.xml"));
+            listener.SequenceChanged += (sender, e) =>
+            {
+                if (this.Model.State == MovementState.InWalkSequence)
+                {
+                    this.Command.StopHexSequencer().Execute();
+                    Command.StartSequence(listener.Sequence).Execute();
+                }
+            };
+
             Console.WriteLine("Awaiting commands.");
             while (true)
             {
@@ -24,7 +36,7 @@ namespace RobotControlFramework.MaintainanceConsole
                     case "QUIT":
                         return;
                     case "SEQ":
-                        Command.StartSequence(sequence).Execute();
+                        Command.StartSequence(listener.Sequence).Execute();
                         break;
                     case "STOP":
                         Command.StopHexSequencer().Execute();

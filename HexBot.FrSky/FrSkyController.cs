@@ -16,12 +16,12 @@ namespace HexBot.FrSky
 
         HexpodSequenceListener listener;
 
-        public void Init ()
+        public void Init()
         {
             var list = DeviceList.Local;
             list.Changed += (sender, e) => SearchDevices();
 
-            listener = new HexpodSequenceListener(Path.Combine(Path.GetDirectoryName (Assembly.GetCallingAssembly().Location), "../../sequence.xml"));
+            listener = new HexpodSequenceListener(Path.Combine(Path.GetDirectoryName(Assembly.GetCallingAssembly().Location), "../../sequence.xml"));
             listener.SequenceChanged += (sender, e) =>
             {
                 if (this.Model.State == MovementState.InWalkSequence)

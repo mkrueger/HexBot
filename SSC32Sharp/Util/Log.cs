@@ -19,9 +19,12 @@ namespace RobotControlFramework.SSC32
 {
     public static class Log
     {
-        public static void Error(string error)
+        public static void Error(string error, Exception e = null)
         {
             Console.WriteLine(error);
+            if (e != null)
+                Console.WriteLine(e);
         }
+
     }
 }

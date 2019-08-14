@@ -28,6 +28,8 @@ namespace RobotControlFramework.SSC32
         /// <param name="time">Time in microseconds to travel from the current position to the desired position. (65535 max)</param>
         public static Command SingleServo(this Command command, int channel, int pulseWidth, int? speed = null, ushort? time = null)
         {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
             SSC32.ValidateServoChannel(channel);
             var sb = command.Builder;
             sb.Append('#');
@@ -56,6 +58,8 @@ namespace RobotControlFramework.SSC32
         /// <param name="positionOffset">The position offset is restricted to -100us to 100us (around 15°)</param>
         public static Command ServoPositionOffset(this Command command, int channel, int positionOffset)
         {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
             SSC32.ValidateServoChannel(channel);
             if (positionOffset < -100 || positionOffset > 100)
                 throw new ArgumentOutOfRangeException(nameof(positionOffset), "The position offset is restricted to -100us to 100us (around 15°)");

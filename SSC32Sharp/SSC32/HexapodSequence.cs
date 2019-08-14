@@ -13,8 +13,12 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using System;
+using System.Xml;
+
 namespace RobotControlFramework.SSC32
 {
+
     public class HexpodSequence
     {
         // Walking Gait Configuration
@@ -38,6 +42,43 @@ namespace RobotControlFramework.SSC32
         public ushort HorizontalServo_MovementTime = 1500;
         public int TravelPercentage_Left = 100;
         public int TravelPercentage_Right = 100;
+
+        public HexpodSequence Clone ()
+        {
+            return (HexpodSequence)MemberwiseClone();
+        }
+
+        public static HexpodSequence ReadSequence (string fileName)
+        {
+            HexpodSequence result = new HexpodSequence();
+            try
+            {
+                using (var reader = XmlReader.Create(fileName))
+                {
+                    reader.MoveToContent();
+                    while (!reader.EOF)
+                    {
+                        foreach (var field in typeof(HexpodSequence).GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance))
+                        {
+                            if (field.Name == reader.Name)
+                            {
+                                reader.MoveToAttribute("value");
+                                object value = reader.ReadContentAs(field.FieldType, null);
+                                field.SetValue(result, value);
+                                Console.WriteLine("set " + field.Name + " to " + value);
+                                break;
+                            }
+                        }
+                        reader.Read();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Log.Error("Error while reading hexapod sequence from " + fileName, e);
+            }
+            return result;
+        }
     }
 
 }

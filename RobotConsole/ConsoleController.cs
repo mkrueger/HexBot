@@ -33,7 +33,8 @@ namespace RobotControlFramework.MaintainanceConsole
                         try
                         {
                             currentChannel = int.Parse(split[1]);
-                        } catch (Exception e)
+                        }
+                        catch (Exception e)
                         {
                             Log.Error(e.ToString());
                             Console.WriteLine("Usage: C [Channel].");

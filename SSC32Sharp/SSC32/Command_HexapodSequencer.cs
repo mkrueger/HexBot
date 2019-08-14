@@ -34,6 +34,8 @@ namespace RobotControlFramework.SSC32
         /// <param name="value">Value.</param>
         public static Command SetVerticalServo(this Command command, ServoSide side, LegValue legValue, int value)
         {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
             if (value < 500 || value > 2500)
                 throw new ArgumentOutOfRangeException(nameof(value), "The valid range is between 500 to 2500uS.");
             var sb = command.Builder;
@@ -62,6 +64,8 @@ namespace RobotControlFramework.SSC32
         /// <param name="speed">Valid range is 0 to 65535uS/Sec.</param>
         public static Command SetVerticalServoMovementSpeed(this Command command, ushort speed)
         {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
             var sb = command.Builder;
             sb.Append("VS ");
             sb.Append(speed);
@@ -77,6 +81,8 @@ namespace RobotControlFramework.SSC32
         /// <param name="value"> The valid range for the arguments is 500 to 2500uS.</param>
         public static Command SetHorizontalServo(this Command command, ServoSide side, FrontRear servoValue, int value)
         {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
             if (value < 500 || value > 2500)
                 throw new ArgumentOutOfRangeException(nameof(value), "The valid range is between 500 to 2500uS.");
             var sb = command.Builder;
@@ -93,6 +99,8 @@ namespace RobotControlFramework.SSC32
         /// <param name="speed">The valid range for the argument is 1 to 65535uS.</param>
         public static Command SetHoizontalServoMovementTime(this Command command, ushort speed)
         {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
             if (speed < 1)
                 throw new ArgumentOutOfRangeException(nameof(speed), "The valid range for the\nargument is 1 to 65535uS.");
             var sb = command.Builder;
@@ -113,6 +121,8 @@ namespace RobotControlFramework.SSC32
         /// <param name="percentage"> The valid range is -100% to 100%.</param>
         public static Command SetTravelPercentage(this Command command, ServoSide side, int percentage)
         {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
             if (percentage < -100 || percentage > 100)
                 throw new ArgumentOutOfRangeException(nameof(percentage), "The valid range is between -100% to 100%");
             var sb = command.Builder;
@@ -131,6 +141,8 @@ namespace RobotControlFramework.SSC32
         /// <param name="percentage"> The valid range is 0% to 200%.</param>
         public static Command SetHorizontalSpeedPercentage(this Command command, int percentage)
         {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
             if (percentage < 0 || percentage > 200)
                 throw new ArgumentOutOfRangeException(nameof(percentage), "The valid range is between 0% to 200%");
             var sb = command.Builder;
@@ -146,6 +158,8 @@ namespace RobotControlFramework.SSC32
         /// </summary>
         public static Command StopHexSequencer(this Command command)
         {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
             var sb = command.Builder;
             sb.Append("XSTOP");
             command.Controller.Model.State = MovementState.Stopped;
@@ -154,6 +168,8 @@ namespace RobotControlFramework.SSC32
 
         public static Command StartSequence(this Command command, HexpodSequence sequence)
         {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
             if (sequence == null)
                 throw new ArgumentNullException(nameof(sequence));
             if (command.Controller.Model.State == MovementState.InWalkSequence)

@@ -1,0 +1,23 @@
+<HexapodSequence>
+
+  <VerticalServo_Left_HighValue value="1600"/>
+  <VerticalServo_Left_MidValue value="1300"/>
+  <VerticalServo_Left_LowValue value="1000"/>
+
+  <VerticalServo_Right_HighValue value="1000"/>
+  <VerticalServo_Right_MidValue value="1300"/>
+  <VerticalServo_Right_LowValue value="1600"/>
+
+  <VerticalServo_MovementSpeed value="3000"/>
+
+  <HorizontalServo_Left_FrontValue value="700"/>
+  <HorizontalServo_Left_RearValue value="1600"/>
+
+  <HorizontalServo_Right_FrontValue value="1600"/>
+  <HorizontalServo_Right_RearValue value="700"/>
+
+  <HorizontalServo_MovementTime value="1500"/>
+
+  <TravelPercentage_Left value="100"/>
+  <TravelPercentage_Right value="100"/>
+</HexapodSequence>

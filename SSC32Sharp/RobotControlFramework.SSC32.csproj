@@ -31,6 +31,7 @@
     <Reference Include="Microsoft.Extensions.ObjectPool">
       <HintPath>..\packages\Microsoft.Extensions.ObjectPool.2.2.0\lib\netstandard2.0\Microsoft.Extensions.ObjectPool.dll</HintPath>
     </Reference>
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -45,6 +46,7 @@
     <Compile Include="Util\StringBuilderCache.cs" />
     <Compile Include="RobotModel.cs" />
     <Compile Include="SSC32\AbstractController.cs" />
+    <Compile Include="SSC32\HexpodSequenceListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="SSC32\" />

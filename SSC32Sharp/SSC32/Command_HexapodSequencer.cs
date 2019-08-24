@@ -160,6 +160,8 @@ namespace RobotControlFramework.SSC32
         {
             if (command == null)
                 throw new ArgumentNullException(nameof(command));
+            if (command.Controller.Model.State == MovementState.Stopped)
+                return command;
             var sb = command.Builder;
             sb.Append("XSTOP");
             command.Controller.Model.State = MovementState.Stopped;
@@ -182,6 +184,55 @@ namespace RobotControlFramework.SSC32
                       .SetHoizontalServoMovementTime(sequence.HorizontalServo_MovementTime)
                       .SetTravelPercentage(ServoSide.Left, sequence.TravelPercentage_Left).SetTravelPercentage(ServoSide.Right, sequence.TravelPercentage_Right)
                       .SetHorizontalSpeedPercentage(command.Controller.Model.Speed);
+        }
+
+        public static Command UpdateSequence(this Command command, HexpodSequence oldSequence, int oldSpeed, HexpodSequence sequence)
+        {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
+            if (oldSequence == null)
+                throw new ArgumentNullException(nameof(oldSequence));
+            if (sequence == null)
+                throw new ArgumentNullException(nameof(sequence));
+
+            if (oldSequence.VerticalServo_Left_HighValue != sequence.VerticalServo_Left_HighValue)
+                command = command.SetVerticalServo(ServoSide.Left, LegValue.High, sequence.VerticalServo_Left_HighValue);
+            if (oldSequence.VerticalServo_Left_MidValue != sequence.VerticalServo_Left_MidValue)
+                command = command.SetVerticalServo(ServoSide.Left, LegValue.Mid, sequence.VerticalServo_Left_MidValue);
+            if (oldSequence.VerticalServo_Left_LowValue != sequence.VerticalServo_Left_LowValue)
+                command = command.SetVerticalServo(ServoSide.Left, LegValue.Low, sequence.VerticalServo_Left_LowValue);
+
+            if (oldSequence.VerticalServo_Right_HighValue != sequence.VerticalServo_Right_HighValue)
+                command = command.SetVerticalServo(ServoSide.Right, LegValue.High, sequence.VerticalServo_Right_HighValue);
+            if (oldSequence.VerticalServo_Right_MidValue != sequence.VerticalServo_Right_MidValue)
+                command = command.SetVerticalServo(ServoSide.Right, LegValue.Mid, sequence.VerticalServo_Right_MidValue);
+            if (oldSequence.VerticalServo_Right_LowValue != sequence.VerticalServo_Right_LowValue)
+                command = command.SetVerticalServo(ServoSide.Right, LegValue.Low, sequence.VerticalServo_Right_LowValue);
+
+            if (oldSequence.VerticalServo_MovementSpeed != sequence.VerticalServo_MovementSpeed)
+                command = command.SetVerticalServoMovementSpeed(sequence.VerticalServo_MovementSpeed);
+
+            if (oldSequence.HorizontalServo_Left_FrontValue != sequence.HorizontalServo_Left_FrontValue)
+                command = command.SetHorizontalServo(ServoSide.Left, FrontRear.Front, sequence.HorizontalServo_Left_FrontValue);
+            if (oldSequence.HorizontalServo_Left_RearValue != sequence.HorizontalServo_Left_RearValue)
+                command = command.SetHorizontalServo(ServoSide.Left, FrontRear.Rear, sequence.HorizontalServo_Left_RearValue);
+
+            if (oldSequence.HorizontalServo_Right_FrontValue != sequence.HorizontalServo_Right_FrontValue)
+                command = command.SetHorizontalServo(ServoSide.Right, FrontRear.Front, sequence.HorizontalServo_Right_FrontValue);
+            if (oldSequence.HorizontalServo_Right_RearValue != sequence.HorizontalServo_Right_RearValue)
+                command = command.SetHorizontalServo(ServoSide.Right, FrontRear.Rear, sequence.HorizontalServo_Right_RearValue);
+
+            if (oldSequence.HorizontalServo_MovementTime != sequence.HorizontalServo_MovementTime)
+                command = command.SetHoizontalServoMovementTime(sequence.HorizontalServo_MovementTime);
+
+            if (oldSequence.TravelPercentage_Left != sequence.TravelPercentage_Left)
+                command = command.SetTravelPercentage(ServoSide.Left, sequence.TravelPercentage_Left);
+            if (oldSequence.TravelPercentage_Right != sequence.TravelPercentage_Right)
+                command = command.SetTravelPercentage(ServoSide.Right, sequence.TravelPercentage_Right);
+            if (command.Controller.Model.State == MovementState.Stopped || command.Controller.Model.Speed != oldSpeed)
+            command = command.SetHorizontalSpeedPercentage(command.Controller.Model.Speed);
+
+            return command;
         }
     }
 }

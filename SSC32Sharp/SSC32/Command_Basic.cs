@@ -82,7 +82,7 @@ namespace RobotControlFramework.SSC32
                 throw new ArgumentNullException(nameof(command));
             SSC32.ValidateServoChannel(channel);
             var sb = command.Builder;
-            sb.Append("XSTOP");
+            sb.Append("STOP");
             sb.Append(channel);
             return command;
         }

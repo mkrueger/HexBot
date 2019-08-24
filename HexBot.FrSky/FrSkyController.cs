@@ -36,9 +36,6 @@ namespace HexBot.FrSky
 
         void RunSequence()
         {
-            if (!SSC32.IsOpen)
-                return;
-
             if (!controllerState.LeftSwitch)
             {
                 if (Model.State == MovementState.InWalkSequence)
@@ -54,8 +51,31 @@ namespace HexBot.FrSky
             }
             try
             {
-                int newSpeed = (int)(200 * controllerState.RZ);
-                if (newSpeed != Model.Speed || !currentSequence.Equals(oldSequence))
+                int newSpeed = (int)(200 * Math.Abs(controllerState.Y));
+
+                if (controllerState.X < 0.1)
+                {
+                    int speed = (int)(100 * Math.Abs(controllerState.X));
+                    currentSequence.TravelPercentage_Left = speed;
+                    currentSequence.TravelPercentage_Right = -speed;
+                } else 
+                if (controllerState.X > 0.1)
+                {
+                    int speed = (int)(100 * Math.Abs(controllerState.X));
+                    currentSequence.TravelPercentage_Left = -speed;
+                    currentSequence.TravelPercentage_Right = speed;
+                }
+                else
+                {
+                    currentSequence.TravelPercentage_Left = currentSequence.TravelPercentage_Right = 100;
+                }
+
+                if (controllerState.Y < 0)
+                {
+                    currentSequence.TravelPercentage_Left = -currentSequence.TravelPercentage_Left;
+                    currentSequence.TravelPercentage_Right = -currentSequence.TravelPercentage_Right;
+                }
+                if (newSpeed != Model.Speed || !currentSequence.Equals(oldSequence) || Model.State != MovementState.InWalkSequence)
                 {
                     Model.Speed = newSpeed;
 
@@ -65,39 +85,47 @@ namespace HexBot.FrSky
                     }
                     else
                     {
-                        Command.StartSequence(currentSequence).Execute();
+                        if (oldStartedSequence == null)
+                        {
+                            Command.StartSequence(currentSequence).Execute();
+                        }
+                        else
+                        {
+                            Command.UpdateSequence(oldStartedSequence, oldSpeed, currentSequence).Execute();
+                        }
+                        oldStartedSequence = currentSequence;
+                        oldSpeed = Model.Speed;
                     }
                     oldSequence = currentSequence;
                 }
-            } catch (Exception e)
+            }
+            catch (Exception e)
             {
                 Log.Error("Error while running sequence", e);
             }
         }
 
-        void UpdateControlState(ControllerState oldState)
+        void UpdateControlState()
         {
-            if (!SSC32.IsOpen)
-                return;
             if (controllerState.LeftSwitch)
             {
                 int value = (int)(500 + 1000 * (1 + controllerState.Z));
                 var cmd = Command;
                 bool exec = false;
-                if (oldState.Z != controllerState.Z || !oldState.LeftSwitch) {
-                 cmd.SingleServo(22, value)
-                    .SingleServo(23, value)
-                    .SingleServo(24, value);
+                if (oldState == null || Math.Abs(oldState.Z - controllerState.Z) > 0.1 || !oldState.LeftSwitch)
+                {
+                    cmd.SingleServo(22, value)
+                       .SingleServo(23, value)
+                       .SingleServo(24, value);
                     exec = true;
                 }
 
-                if (oldState.RZ != controllerState.RZ || !oldState.LeftSwitch)
+                if (oldState == null || Math.Abs(oldState.RZ - controllerState.RZ) > 0.1 || !oldState.LeftSwitch)
                 {
                     value = (int)(500 + 1000 * (1 + controllerState.RZ));
                     cmd.SingleServo(6, value)
                         .SingleServo(7, value)
-                        .SingleServo(8, value)
-                        ;
+                        .SingleServo(8, value);
                     exec = true;
                 }
                 if (exec)
@@ -105,7 +133,7 @@ namespace HexBot.FrSky
             }
             else
             {
-                if (oldState.LeftSwitch)
+                if (oldState == null || oldState.LeftSwitch)
                 {
                     Command.StopServo(22).StopServo(23).StopServo(24)
                         .StopServo(6).StopServo(7).StopServo(8).Execute();
@@ -119,23 +147,25 @@ namespace HexBot.FrSky
 
         ControllerState controllerState = new ControllerState();
         private HexpodSequence oldSequence;
+        private HexpodSequence oldStartedSequence;
+        private int oldSpeed;
+        private ControllerState oldState;
 
         public class ControllerState : IEquatable<ControllerState>
         {
             public double X, Y, Z;
             public double RX, RY, RZ;
 
-            public double SL, SR;
             public bool LeftSwitch, RightSwitch;
 
 
             public override string ToString()
             {
                 const string fmt = ",3:N1";
-                return string.Format("[ControllerState: X={0"+fmt+"}, Y={1"+fmt+"}, Z={2"+fmt+"}, RX={3"+fmt+"}, RY={4"+fmt+"}, RZ={5"+fmt+"}, SL={6"+fmt+"}, SR={7"+fmt+"}, LeftSwitch={8}, RightSwitch={9}]", X, Y, Z, RX, RY, RZ, SL, SR, LeftSwitch, RightSwitch);
+                return string.Format("[ControllerState: X={0" + fmt + "}, Y={1" + fmt + "}, Z={2" + fmt + "}, RX={3" + fmt + "}, RY={4" + fmt + "}, RZ={5" + fmt + "}, LeftSwitch={6}, RightSwitch={7}]", X, Y, Z, RX, RY, RZ, LeftSwitch, RightSwitch);
             }
 
-            public ControllerState Clone() => (ControllerState)this.MemberwiseClone ();
+            public ControllerState Clone() => (ControllerState)this.MemberwiseClone();
 
 
             public override int GetHashCode()
@@ -145,9 +175,9 @@ namespace HexBot.FrSky
 
             public bool Equals(ControllerState other)
             {
-                return X == other.X && Y == other.Y && Z == other.Z &&
-                    RX == other.RX && RY == other.RY && RZ == other.RZ &&
-                    SL == other.SL && SR == other.SR &&
+                const double EPSILON = 0.01;
+                return Math.Abs(X - other.X) < EPSILON && Math.Abs(Y - other.Y) < EPSILON && Math.Abs(Z - other.Z) < EPSILON &&
+                    Math.Abs(RX - other.RX) < EPSILON && Math.Abs(RY - other.RY) < EPSILON && Math.Abs(RZ - other.RZ) < EPSILON &&
                     LeftSwitch == other.LeftSwitch && RightSwitch == other.RightSwitch;
             }
         }
@@ -182,14 +212,18 @@ namespace HexBot.FrSky
                     inputReceiver.Received += (sender, e) =>
                     {
                         Report report;
-                        var oldState = controllerState.Clone();
+
                         while (inputReceiver.TryRead(inputReportBuffer, 0, out report))
                         {
                             if (inputParser.TryParseReport(inputReportBuffer, 0, report))
                                 WriteDeviceItemInputParserResult(inputParser);
                         }
-                        if (!controllerState.Equals (oldState))
-                            UpdateControlState(oldState);
+                        if (oldState == null || !controllerState.Equals(oldState))
+                        {
+                            Console.WriteLine(controllerState);
+                            UpdateControlState();
+                            oldState = controllerState.Clone();
+                        }
                     };
                 }
                 inputReceiver.Start(hidStream);
@@ -198,7 +232,7 @@ namespace HexBot.FrSky
             }
             else
             {
-                Console.WriteLine($"Can't open device {dev.GetFriendlyName()}. Check permissions for {dev.GetFileSystemName ()}.");
+                Console.WriteLine($"Can't open device {dev.GetFriendlyName()}. Check permissions for {dev.GetFileSystemName()}.");
                 return false;
             }
             return true;
@@ -214,7 +248,7 @@ namespace HexBot.FrSky
                 var dataValue = parser.GetValue(changedIndex);
                 var value = dataValue.GetPhysicalValue();
                 Usage usage = (Usage)dataValue.Usages.FirstOrDefault();
-                value = value < 0 ? value / 127 : value / 254;
+                value = value < 0 ? value / 127 : (value -54) / 200;
                 switch (usage)
                 {
                     case Usage.GenericDesktopX:
@@ -251,7 +285,6 @@ namespace HexBot.FrSky
                         Console.WriteLine("unknown usage:" + usage);
                         break;
                 }
-                Console.WriteLine(controllerState);
             }
         }
         public bool IsRunning { get; set; }

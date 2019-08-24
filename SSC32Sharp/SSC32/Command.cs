@@ -35,7 +35,16 @@ namespace RobotControlFramework.SSC32
         public void Execute()
         {
             sb.Append('\r');
-            controller.SSC32.WriteCommand(StringBuilderCache.ReturnAndFree(sb));
+            string cmd = StringBuilderCache.ReturnAndFree(sb);
+            if (cmd.Length > 1)
+            {
+                if (!controller.SSC32.IsOpen)
+                {
+                    System.Console.WriteLine(cmd);
+                    return;
+                }
+                controller.SSC32.WriteCommand(cmd);
+            }
             sb = null;
         }
     }

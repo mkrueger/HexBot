@@ -70,5 +70,21 @@ namespace RobotControlFramework.SSC32
             sb.Append(positionOffset);
             return command;
         }
+
+        /// <summary>
+        /// Immediately stops the specified servo at its current position.
+        /// </summary>
+        /// <returns>The position offset.</returns>
+        /// <param name="channel">Pin / channel to which the servo is connected (0 to 31).</param>
+        public static Command StopServo(this Command command, int channel)
+        {
+            if (command == null)
+                throw new ArgumentNullException(nameof(command));
+            SSC32.ValidateServoChannel(channel);
+            var sb = command.Builder;
+            sb.Append("XSTOP");
+            sb.Append(channel);
+            return command;
+        }
     }
 }

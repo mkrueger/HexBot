@@ -16,7 +16,7 @@ namespace HexBot.FrSky
 
         HexpodSequenceListener listener;
 
-        public void Init()
+        public bool Init()
         {
             var list = DeviceList.Local;
             list.Changed += (sender, e) => SearchDevices();
@@ -31,13 +31,21 @@ namespace HexBot.FrSky
                 }
             };
 
-            SearchDevices();
+            return SearchDevices();
         }
 
         void RunSequence()
         {
             if (!SSC32.IsOpen)
                 return;
+
+            if (!controllerState.LeftSwitch)
+            {
+                if (Model.State == MovementState.InWalkSequence)
+                    Command.StopHexSequencer().Execute();
+                return;
+            }
+
             var currentSequence = listener?.Sequence?.Clone();
             if (currentSequence == null)
             {
@@ -66,16 +74,24 @@ namespace HexBot.FrSky
         {
             if (!SSC32.IsOpen)
                 return;
-            int value = (int)(500 + 1000 * (1 + controllerState.Z));
-            var cmd = Command.SingleServo(22, value)
-                .SingleServo(23, value)
-                .SingleServo(24, value);
+            if (controllerState.LeftSwitch)
+            {
+                int value = (int)(500 + 1000 * (1 + controllerState.Z));
+                var cmd = Command.SingleServo(22, value)
+                    .SingleServo(23, value)
+                    .SingleServo(24, value);
 
-            value = (int)(500 + 1000 * (1 + controllerState.RZ));
-            cmd.SingleServo(6, value)
-                .SingleServo(7, value)
-                .SingleServo(8, value)
-                .Execute();
+                value = (int)(500 + 1000 * (1 + controllerState.RZ));
+                cmd.SingleServo(6, value)
+                    .SingleServo(7, value)
+                    .SingleServo(8, value)
+                    .Execute();
+            }
+            else
+            {
+                Command.StopServo(22).StopServo(23).StopServo(24)
+                    .StopServo(6).StopServo(7).StopServo(8).Execute();
+            }
 
             RunSequence();
             if (controllerState.RightSwitch)
@@ -100,7 +116,7 @@ namespace HexBot.FrSky
             }
         }
 
-        private void SearchDevices()
+        bool SearchDevices()
         {
 
             if (hidStream != null)
@@ -114,7 +130,7 @@ namespace HexBot.FrSky
             if (dev == null)
             {
                 Console.WriteLine("No FrSky device found.");
-                return;
+                return false;
             }
             if (dev.TryOpen(out hidStream))
             {
@@ -139,9 +155,15 @@ namespace HexBot.FrSky
                     };
                 }
                 inputReceiver.Start(hidStream);
+                Console.WriteLine("FrSky device found and initialized.");
 
             }
-            Console.WriteLine("FrSky device found.");
+            else
+            {
+                Console.WriteLine($"Can't open device {dev.GetFriendlyName()}. Check permissions for {dev.GetFileSystemName ()}.");
+                return false;
+            }
+            return true;
         }
 
 
@@ -200,8 +222,7 @@ namespace HexBot.FrSky
         {
             if (!SSC32.IsOpen)
             {
-                Log.Error("SSC32 connection is not open.");
-                return;
+                Log.Error("SSC32 connection is not open. Just running in input mode.");
             }
             IsRunning = true;
             while (IsRunning)

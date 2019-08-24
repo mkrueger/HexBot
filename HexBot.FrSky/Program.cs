@@ -12,9 +12,15 @@ namespace HexBot.FrSky
             {
                 using (var ctl = new FrSkyController())
                 {
-                    ctl.OpenSSC32Connection("/dev/ttyUSB0", SSC32_Constants.BaudGREENRED_115200);
-                    ctl.Init();
-                    ctl.Run();
+                    try
+                    {
+                        ctl.OpenSSC32Connection("/dev/ttyUSB0", SSC32_Constants.BaudGREENRED_115200);
+                    } catch (Exception e)
+                    {
+                        Log.Error("Can't open connection.", e);
+                    }
+                    if (ctl.Init())
+                        ctl.Run();
                 }
             }
             catch (Exception e)

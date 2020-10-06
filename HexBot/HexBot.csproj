@@ -34,6 +34,7 @@
     <Compile Include="Controller\Action.cs" />
     <Compile Include="Controller\BluetoothController.cs" />
     <Compile Include="Program.cs" />
+    <Compile Include="Properties\3lcvocleoclolc.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SSC32Sharp\RobotControlFramework.SSC32.csproj">

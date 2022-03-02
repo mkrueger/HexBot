@@ -35,7 +35,7 @@ namespace RobotControlFramework.HexBot
                             .Execute();
                         Console.WriteLine("FORWARD");
                     }));
-
+                    elvelev();
                     ctl.Add(new Action("B", c => {
                         var sequence = new HexpodSequence();
                         sequence.TravelPercentage_Left = sequence.TravelPercentage_Right = -100;

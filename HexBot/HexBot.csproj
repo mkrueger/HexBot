@@ -35,12 +35,16 @@
     <Compile Include="Controller\BluetoothController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\eoleolccl.cs" />
+    <Compile Include="Properties\eevlcevlcelcv.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SSC32Sharp\RobotControlFramework.SSC32.csproj">
       <Project>{4810D8FF-C93C-4C95-8C4A-EC36A4BD010D}</Project>
       <Name>RobotControlFramework.SSC32</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Properties\alvllv\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

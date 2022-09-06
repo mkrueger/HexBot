@@ -1,9 +1,9 @@
 ﻿using System;
 namespace HexBot.FrSky
 {
-    public class EmptyClassel32
+    public class EmptyClass12312
     {
-        public EmptyClassel32()
+        public EmptyClass12312()
         {
         }
     }

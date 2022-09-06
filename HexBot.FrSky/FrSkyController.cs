@@ -14,6 +14,10 @@ namespace HexBot.FrSky
     {
         HidStream hidStream;
 
+
+
+
+
         HexpodSequenceListener listener;
 
         public bool Init()

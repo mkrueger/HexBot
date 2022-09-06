@@ -8,6 +8,10 @@ namespace HexBot.FrSky
         public static void Main(string[] args)
         {
 
+
+
+
+
             try
             {
                 using (var ctl = new FrSkyController())

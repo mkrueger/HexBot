@@ -10,19 +10,7 @@ using System.IO;
 
 namespace HexBot.FrSky
 {
-
-
-
-
-
-
-
-
-
-
-
-    class FrSkyCo
-        troller : AbstractController
+    class FrSkyCotroller : AbstractController
     {
         HidStream hidStream;
 

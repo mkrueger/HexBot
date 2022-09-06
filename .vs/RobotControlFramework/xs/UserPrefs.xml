@@ -6,7 +6,6 @@
       <Breakpoint file="/Users/mkrueger/work/vsmac/main/src/addins/VersionControl/MonoDevelop.VersionControl.Git/MonoDevelop.VersionControl.Git.addin.xml" line="9" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
-  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MonoDevelop.Ide.Workbench ActiveDocument="HexBot.FrSky/FrSkyController.cs">
     <Files>
       <File FileName="HexBot.FrSky/FrSkyController.cs" Line="14" Column="1" />
@@ -23,8 +22,12 @@
           </Node>
         </State>
       </Pad>
+      <Pad Id="MonoDevelop.Debugger.WatchPad">
+        <State />
+      </Pad>
     </Pads>
   </MonoDevelop.Ide.Workbench>
-  <MonoDevelop.Ide.ItemProperties.MaintainanceConsole PreferredExecutionTarget="MonoDevelop.Default" />
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
   <MultiItemStartupConfigurations />
+  <MonoDevelop.Ide.ItemProperties.MaintainanceConsole PreferredExecutionTarget="MonoDevelop.Default" />
 </Properties>

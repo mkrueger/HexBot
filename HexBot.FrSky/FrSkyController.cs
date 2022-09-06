@@ -13,7 +13,12 @@ namespace HexBot.FrSky
 
 
 
-    class FrSkyController : AbstractController
+
+
+
+
+    class FrSkyCo
+        troller : AbstractController
     {
         HidStream hidStream;
 

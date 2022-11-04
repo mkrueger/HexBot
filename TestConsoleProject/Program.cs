@@ -4,7 +4,7 @@ float f = 32;
 
 while (true)
 {
-    Console.WriteLine($"int: {i} float:{f}");
+    Console.WriteLine($"new: {i} float:{f}");
     var line = Console.ReadLine();
     if (line.StartsWith("f"))
     {

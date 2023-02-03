@@ -35,6 +35,7 @@
     <Compile Include="Controller\BluetoothController.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\EmptyClass.cs" />
+    <Compile Include="Properties\2221l.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SSC32Sharp\RobotControlFramework.SSC32.csproj">
